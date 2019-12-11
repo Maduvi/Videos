@@ -3,14 +3,28 @@
 """
 This is the Lorenz model solved with RK4.
 
+After code finishes creating images in images_lorenz folder,
+you can create the video using the FFmpeg command-line utility:
+
+ mateo@Linux: ~$ ffmpeg -i images_lorenz/lorenz_%05d.png out.mp4 
+
 Author: Mateo
 Date: 15-Mar-2017
 """
 
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
+
+# create output directory if does not exist
+odir = './images_lorenz'
+if not os.path.exists(odir):
+    os.mkdir(odir)
+    print("Directory %s created." % odir)
+else:
+    print("Directory %s already exists. Replacing images." % odir)
 
 def lorenz(s, b, r, xi, yi, zi):
     """Lorenz model"""
@@ -71,6 +85,7 @@ vt2,vx2,vy2,vz2,nsteps = lorenz(s, b, r, 12.001,12.0,12.0)
 cmap = mpl.cm.BrBG
 
 # 3d phase diagram
+print('Creating %s frames (this may take a while) ...' % nsteps)
 for i in range(nsteps):
         
     fig = plt.figure()
@@ -87,5 +102,5 @@ for i in range(nsteps):
     ax.plot(vx2[:i+1],vy2[:i+1],vz2[:i+1],color='DodgerBlue')
     ax.plot([vx1[i]],[vy1[i]],[vz1[i]],'o',color='Goldenrod')
     ax.plot([vx2[i]],[vy2[i]],[vz2[i]],'o',color='DodgerBlue')
-    plt.savefig("images/chaos/lorenz_%05d.png" % i)
-    plt.clf()
+    plt.savefig(odir + "/lorenz_%05d.png" % i)
+    plt.close()
